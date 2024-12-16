@@ -23,6 +23,7 @@ public class Transaksi {
 
     public void tampilkanRiwayat() {
         System.out.println("Riwayat Transaksi:");
+        System.out.println("Zain suka salsa");
         for (String transaksi : riwayatTransaksi) {
             System.out.println(transaksi);
         }
