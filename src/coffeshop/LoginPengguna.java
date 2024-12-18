@@ -4,6 +4,8 @@
  */
 package coffeshop;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author akmal
@@ -129,21 +131,29 @@ public class LoginPengguna extends javax.swing.JFrame {
     }//GEN-LAST:event_usernameActionPerformed
 
     private void buttonSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSubmitActionPerformed
-        String inputUsername = username.getText();
-        String inputPassword = password.getText();
-        
-        if (pengguna.getNamaPengguna().equals(inputUsername) && pengguna.cekKataSandi(inputPassword)) {
-        // Jika login berhasil
-        javax.swing.JOptionPane.showMessageDialog(this, "Login Berhasil!");
-        this.setVisible(false);  // Menutup jendela login
+    String inputUsername = username.getText();
+    String inputPassword = password.getText();
+    
+    // Daftar pengguna dengan role admin dan pelanggan
+    Pengguna admin = new Pengguna("admin", "adminpass", "admin");
+    Pengguna pelanggan = new Pengguna("pelanggan", "12345", "pelanggan");
 
-            // Melanjutkan ke layar menu utama (bisa nanti ditambahkan)
-            // Contoh untuk memulai GUI berikutnya (Menu Utama)
-            // new MenuUtama(pengguna).setVisible(true);
-        } else {
-            // Jika login gagal
-            javax.swing.JOptionPane.showMessageDialog(this, "Login Gagal! Periksa Username atau Password.");
-        }
+    // Verifikasi login
+    if (inputUsername.equals(admin.getNamaPengguna()) && inputPassword.equals(admin.getKataSandi())) {
+        // Jika admin berhasil login, arahkan ke Admin Dashboard
+        JOptionPane.showMessageDialog(this, "Login Admin Berhasil!");
+        new AdminDashboard().setVisible(true); // Pindah ke tampilan Admin
+        this.dispose(); // Menutup jendela login
+    } else if (inputUsername.equals(pelanggan.getNamaPengguna()) && inputPassword.equals(pelanggan.getKataSandi())) {
+        // Jika pelanggan berhasil login, arahkan ke Pelanggan Dashboard
+        JOptionPane.showMessageDialog(this, "Login Pelanggan Berhasil!");
+        new PelangganDashboard().setVisible(true); // Pindah ke tampilan Pelanggan
+        this.dispose(); // Menutup jendela login
+    } else {
+        // Jika login gagal
+        JOptionPane.showMessageDialog(this, "Nama pengguna atau kata sandi salah!");
+    }
+}
     }//GEN-LAST:event_buttonSubmitActionPerformed
 
     /**

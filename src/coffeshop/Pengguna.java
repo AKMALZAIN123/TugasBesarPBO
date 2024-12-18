@@ -11,18 +11,32 @@ package coffeshop;
 public class Pengguna {
     private String namaPengguna;
     private String kataSandi;
+    private String role; // Menambahkan role (admin/pelanggan)
 
-    public Pengguna(String namaPengguna, String kataSandi) {
+    public Pengguna(String namaPengguna, String kataSandi, String role) {
         this.namaPengguna = namaPengguna;
         this.kataSandi = kataSandi;
+        this.role = role;
     }
 
     public String getNamaPengguna() {
         return namaPengguna;
     }
 
+    public String getKataSandi() {
+        return kataSandi;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
     public boolean cekKataSandi(String inputKataSandi) {
         return kataSandi.equals(inputKataSandi);
     }
 }
+
+
+
+
 
