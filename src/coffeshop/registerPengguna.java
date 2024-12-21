@@ -4,20 +4,18 @@
  */
 package coffeshop;
 
-import Class.Pengguna;
+import classs.Pengguna;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
-import Class.Pengguna;
 import classs.ValidasiInputException;
-import coffeshop.LoginPengguna;
 import database.DatabaseConnection;
 
 /**
  *
- * @author cofeshop
+ * @author akmal
  */
 public class registerPengguna extends javax.swing.JFrame {
 
@@ -222,6 +220,8 @@ public class registerPengguna extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(registerPengguna.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 

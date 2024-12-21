@@ -4,12 +4,11 @@
  */
 package coffeshop;
 
-import coffeshop.LoginPengguna;
 import java.awt.CardLayout;
 
 /**
  *
- * @author cofeshop
+ * @author akmal
  */
 public class AdminDashboard extends javax.swing.JFrame {
 
@@ -392,6 +391,10 @@ public class AdminDashboard extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(AdminDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>

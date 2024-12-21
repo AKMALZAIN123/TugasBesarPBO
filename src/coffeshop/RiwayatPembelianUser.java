@@ -6,7 +6,7 @@ package coffeshop;
 
 /**
  *
- * @author cofeshop
+ * @author akmal
  */
 public class RiwayatPembelianUser extends javax.swing.JFrame {
 
@@ -110,6 +110,8 @@ public class RiwayatPembelianUser extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(RiwayatPembelianUser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 

@@ -6,7 +6,7 @@ package coffeshop;
 
 /**
  *
- * @author cofeshop
+ * @author akmal
  */
 public class PembayaranUser extends javax.swing.JFrame {
 
@@ -136,6 +136,7 @@ public class PembayaranUser extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(PembayaranUser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */

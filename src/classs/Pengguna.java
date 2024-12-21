@@ -6,14 +6,21 @@ package classs;
 
 /**
  *
- * @author cofeshop
+ * @author akmal
  */
 public class Pengguna {
+
     private String namaPengguna;
     private String kataSandi;
-    private String role; // Menambahkan role (admin/pelanggan)
+    private String role;
 
-    public Pengguna(String namaPengguna, String kataSandi, String role) {
+    public Pengguna(String namaPengguna, String kataSandi, String role) throws ValidasiInputException {
+        if (namaPengguna == null || namaPengguna.isEmpty()) {
+            throw new ValidasiInputException("namaPengguna tidak boleh kosong!");
+        }
+        if (kataSandi == null || kataSandi.isEmpty()) {
+            throw new ValidasiInputException("kataSandi tidak boleh kosong!");
+        }
         this.namaPengguna = namaPengguna;
         this.kataSandi = kataSandi;
         this.role = role;
@@ -35,8 +42,3 @@ public class Pengguna {
         return kataSandi.equals(inputKataSandi);
     }
 }
-
-
-
-
-
