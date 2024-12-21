@@ -4,21 +4,27 @@
  */
 package coffeshop;
 
-import classs.Pengguna;
+import Class.Pengguna;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import Class.Pengguna;
+import classs.ValidasiInputException;
+import coffeshop.LoginPengguna;
+import database.DatabaseConnection;
 
 /**
  *
  * @author cofeshop
  */
-public class LoginPengguna extends javax.swing.JFrame {
-    private Pengguna pengguna;
+public class registerPengguna extends javax.swing.JFrame {
 
     /**
      * Creates new form LoginPengguna
      */
-    public LoginPengguna(Pengguna pengguna) {
-        this.pengguna = pengguna;  // Set objek pengguna yang sudah ada
+    public registerPengguna() {
         initComponents();
     }
 
@@ -38,14 +44,16 @@ public class LoginPengguna extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         password = new javax.swing.JPasswordField();
+        jLabel5 = new javax.swing.JLabel();
+        btnLogin = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel1.setText("Username:");
+        jLabel1.setText("Masukkan Nama Lengkap: ");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel2.setText("Password:");
+        jLabel2.setText("Masukkan Password: ");
 
         username.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -70,7 +78,20 @@ public class LoginPengguna extends javax.swing.JFrame {
 
         jLabel4.setBackground(new java.awt.Color(255, 204, 0));
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
-        jLabel4.setText("Login Coffe Shop");
+        jLabel4.setText("Register Coffe Shop");
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel5.setText("Jika sudah punya akun");
+
+        btnLogin.setBackground(new java.awt.Color(60, 63, 65));
+        btnLogin.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnLogin.setText("Login");
+        btnLogin.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -79,24 +100,31 @@ public class LoginPengguna extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(90, 90, 90)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(24, 24, 24)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel1)
                             .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(username, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
-                            .addComponent(password)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(113, 113, 113)
+                        .addComponent(jLabel4)))
+                .addContainerGap(69, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(81, 81, 81)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(buttonSubmit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addGap(0, 81, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(124, 124, 124)
-                .addComponent(jLabel4)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(buttonSubmit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(109, 109, 109)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnLogin)))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -105,7 +133,7 @@ public class LoginPengguna extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
-                .addGap(73, 73, 73)
+                .addGap(71, 71, 71)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel1)
                     .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -113,9 +141,13 @@ public class LoginPengguna extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(41, 41, 41)
+                .addGap(43, 43, 43)
                 .addComponent(buttonSubmit)
-                .addContainerGap(168, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(btnLogin))
+                .addContainerGap(128, Short.MAX_VALUE))
         );
 
         pack();
@@ -126,30 +158,44 @@ public class LoginPengguna extends javax.swing.JFrame {
     }//GEN-LAST:event_usernameActionPerformed
 
     private void buttonSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSubmitActionPerformed
-    String inputUsername = username.getText();
-    String inputPassword = password.getText();
-    
-    // Daftar pengguna dengan role admin dan pelanggan
-    Pengguna admin = new Pengguna("admin", "adminpass", "admin");
-    Pengguna pelanggan = new Pengguna("pelanggan", "12345", "pelanggan");
+        try {
+            String inputNama = username.getText();
+            String inputSandi = String.valueOf(password.getPassword());
 
-    // Verifikasi login
-    if (inputUsername.equals(admin.getNamaPengguna()) && inputPassword.equals(admin.getKataSandi())) {
-        // Jika admin berhasil login, arahkan ke Admin Dashboard
-        JOptionPane.showMessageDialog(this, "Login Admin Berhasil!");
-        new AdminDashboard().setVisible(true); // Pindah ke tampilan Admin
-        this.dispose(); // Menutup jendela login
-    } else if (inputUsername.equals(pelanggan.getNamaPengguna()) && inputPassword.equals(pelanggan.getKataSandi())) {
-        // Jika pelanggan berhasil login, arahkan ke Pelanggan Dashboard
-        JOptionPane.showMessageDialog(this, "Login Pelanggan Berhasil!");
-        new PelangganDashboard().setVisible(true); // Pindah ke tampilan Pelanggan
-        this.dispose(); // Menutup jendela login
-    } else {
-        // Jika login gagal
-        JOptionPane.showMessageDialog(this, "Nama pengguna atau kata sandi salah!");
-    }
-}
+            // Membuat objek Costumer
+            Pengguna pengguna = new Pengguna(inputNama, inputSandi, "");
+
+            try (Connection conn = DatabaseConnection.getConnection()) {
+                String sql = "INSERT INTO pengguna (namaPengguna, kataSandi, role) VALUES (?, ?, ?)";
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setString(1, pengguna.getNamaPengguna());
+                stmt.setString(2, pengguna.getKataSandi());
+                stmt.setString(3, "pelanggan");
+
+                // Eksekusi query untuk menyimpan data
+                int affectedRows = stmt.executeUpdate();
+                if (affectedRows > 0) {
+                    JOptionPane.showMessageDialog(this, "Registrasi berhasil!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    LoginPengguna log = new LoginPengguna();
+                    log.setVisible(true);
+                    this.dispose(); // Tutup form registrasi
+                } else {
+                    JOptionPane.showMessageDialog(this, "Registrasi gagal!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat menyimpan data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+        } catch (ValidasiInputException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_buttonSubmitActionPerformed
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        LoginPengguna log = new LoginPengguna();
+        log.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
      * @param args the command line arguments
@@ -168,32 +214,34 @@ public class LoginPengguna extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(LoginPengguna.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(registerPengguna.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(LoginPengguna.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(registerPengguna.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(LoginPengguna.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(registerPengguna.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(LoginPengguna.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(registerPengguna.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        Pengguna pengguna = new Pengguna("pelanggan", "12345");
+        //</editor-fold>
 
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                 new LoginPengguna(pengguna).setVisible(true);
+                new registerPengguna().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLogin;
     private javax.swing.JButton buttonSubmit;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPasswordField password;
     private java.awt.TextField username;
     // End of variables declaration//GEN-END:variables

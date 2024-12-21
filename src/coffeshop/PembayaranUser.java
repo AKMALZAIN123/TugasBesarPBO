@@ -6,7 +6,7 @@ package coffeshop;
 
 /**
  *
- * @author akmal
+ * @author cofeshop
  */
 public class PembayaranUser extends javax.swing.JFrame {
 
