@@ -8,15 +8,35 @@ import java.sql.*;
 
 /**
  *
- * @author cofeshop
+ * @author akmal
  */
 public class DatabaseConnection {
+    private static Connection connection;
 
-    static final String URL = "jdbc:mysql://localhost:3306/coffe_shop";
-    static final String USER = "root";
-    static final String PASSWORD = "";
+    public static Connection getConnection() {
+        try {
+            if (connection == null || connection.isClosed()) {
+                String url = "jdbc:mysql://localhost:3307/coffe_shop";
+                String user = "root";
+                String password = "";
+                connection = DriverManager.getConnection(url, user, password);
+                System.out.println("Database Connected");
+            }
+        } catch (SQLException e) {
+            System.err.println("Connection Failed: " + e.getMessage());
+        }
+        return connection;
+    }
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+    public static void closeConnection() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                connection = null;
+                System.out.println("Database Disconnected");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error closing connection: " + e.getMessage());
+        }
     }
 }

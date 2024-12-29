@@ -4,23 +4,106 @@
  */
 package coffeshop;
 
+import database.DatabaseConnection;
 import java.awt.CardLayout;
+import java.sql.*;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author akmal
  */
 public class AdminDashboard extends javax.swing.JFrame {
-
     private CardLayout cardLayout;
+
     /**
      * Creates new form MenuCoffeShop
      */
+    
+    private void loadDataToTable() {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DatabaseConnection.getConnection();
+            String sql = "SELECT * FROM detailMenu";
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            DefaultTableModel model = (DefaultTableModel) tblMenu.getModel();
+            model.setRowCount(0);
+
+            while(rs.next()) {
+                String menu = rs.getString("namaMenu");
+                String harga = rs.getString("harga");
+                String stok = rs.getString("jumlah");
+
+                model.addRow(new Object[]{menu, harga, stok});
+            }
+
+        } catch (SQLException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Error loading data: " + e.getMessage(), 
+                "Error", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (conn != null) conn.close();
+            } catch (SQLException ex) {
+                System.err.println("Error closing resources: " + ex.getMessage());
+            }
+        }
+    }
+    
+    private void loadTransaksi(){
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DatabaseConnection.getConnection();
+            String sql = "SELECT * FROM laporanTransaksi";
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            DefaultTableModel model = (DefaultTableModel) tblTransaksi.getModel();
+            model.setRowCount(0);
+
+            while(rs.next()) {
+                String menu = rs.getString("namaMenu");
+                String harga = rs.getString("harga");
+                String stok = rs.getString("jumlah");
+                String totalHarga = rs.getString("totalHarga");
+
+                model.addRow(new Object[]{menu, harga, stok, totalHarga});
+            }
+
+        } catch (SQLException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Error loading data: " + e.getMessage(), 
+                "Error", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (conn != null) conn.close();
+            } catch (SQLException ex) {
+                System.err.println("Error closing resources: " + ex.getMessage());
+            }
+        }
+    }
+    
     public AdminDashboard() {
         initComponents();
         cardLayout = (CardLayout) mainPanel.getLayout();
+        loadDataToTable();
+        loadTransaksi();
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -37,20 +120,19 @@ public class AdminDashboard extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        textField4 = new java.awt.TextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        textField5 = new java.awt.TextField();
-        textField6 = new java.awt.TextField();
+        btnProduk = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblMenu = new javax.swing.JTable();
-        jButton3 = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
+        namaMenu = new javax.swing.JComboBox<>();
+        txtHarga = new javax.swing.JTextField();
+        txtStok = new javax.swing.JTextField();
         lihatOrder = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tblMenu1 = new javax.swing.JTable();
-        jButton6 = new javax.swing.JButton();
+        btnCetak = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblTransaksi = new javax.swing.JTable();
         sideMenu = new javax.swing.JPanel();
         btnManage = new javax.swing.JButton();
         btnOrder = new javax.swing.JButton();
@@ -80,30 +162,27 @@ public class AdminDashboard extends javax.swing.JFrame {
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel8.setText("Stok:");
 
-        jButton1.setBackground(new java.awt.Color(0, 0, 0));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Pesan");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnProduk.setBackground(new java.awt.Color(0, 0, 0));
+        btnProduk.setForeground(new java.awt.Color(255, 255, 255));
+        btnProduk.setText("Tambah");
+        btnProduk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnProdukActionPerformed(evt);
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(255, 0, 0));
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Delete");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnDelete.setBackground(new java.awt.Color(255, 0, 0));
+        btnDelete.setForeground(new java.awt.Color(255, 255, 255));
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnDeleteActionPerformed(evt);
             }
         });
 
         tblMenu.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
                 "Menu", "Harga", "Stok"
@@ -111,75 +190,88 @@ public class AdminDashboard extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblMenu);
 
-        jButton3.setBackground(new java.awt.Color(0, 0, 0));
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setText("Update");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnUpdate.setBackground(new java.awt.Color(0, 0, 0));
+        btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
+        btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnUpdateActionPerformed(evt);
             }
         });
+
+        namaMenu.setBackground(new java.awt.Color(255, 255, 255));
+        namaMenu.setForeground(new java.awt.Color(51, 51, 51));
+        namaMenu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Expresso", "Latte", "Cappuccino", "Americano" }));
+
+        txtHarga.setBackground(new java.awt.Color(255, 255, 255));
+        txtHarga.setForeground(new java.awt.Color(0, 0, 0));
+
+        txtStok.setBackground(new java.awt.Color(255, 255, 255));
+        txtStok.setForeground(new java.awt.Color(0, 0, 0));
 
         javax.swing.GroupLayout manageCoffeLayout = new javax.swing.GroupLayout(manageCoffe);
         manageCoffe.setLayout(manageCoffeLayout);
         manageCoffeLayout.setHorizontalGroup(
             manageCoffeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(manageCoffeLayout.createSequentialGroup()
-                .addGap(0, 18, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(55, 55, 55))
-            .addGroup(manageCoffeLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, manageCoffeLayout.createSequentialGroup()
+                .addGap(34, 34, 34)
+                .addGroup(manageCoffeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel8))
                 .addGroup(manageCoffeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(manageCoffeLayout.createSequentialGroup()
-                        .addGap(142, 142, 142)
+                        .addGap(18, 18, 18)
                         .addComponent(jLabel1))
                     .addGroup(manageCoffeLayout.createSequentialGroup()
-                        .addGap(34, 34, 34)
-                        .addGroup(manageCoffeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(manageCoffeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel8)
-                                .addComponent(jLabel3))
-                            .addComponent(jLabel2))
                         .addGap(18, 18, 18)
                         .addGroup(manageCoffeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(textField4, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(textField5, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(textField6, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, manageCoffeLayout.createSequentialGroup()
+                            .addComponent(txtStok, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(manageCoffeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(namaMenu, 0, 232, Short.MAX_VALUE)
+                                .addComponent(txtHarga)))))
+                .addGap(55, 176, Short.MAX_VALUE))
+            .addGroup(manageCoffeLayout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jScrollPane1)
-                .addContainerGap())
+                .addGap(72, 72, 72))
+            .addGroup(manageCoffeLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnProduk, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         manageCoffeLayout.setVerticalGroup(
             manageCoffeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(manageCoffeLayout.createSequentialGroup()
-                .addGap(22, 22, 22)
+                .addGap(26, 26, 26)
                 .addComponent(jLabel1)
-                .addGap(29, 29, 29)
+                .addGap(25, 25, 25)
                 .addGroup(manageCoffeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(manageCoffeLayout.createSequentialGroup()
-                        .addComponent(textField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(manageCoffeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, manageCoffeLayout.createSequentialGroup()
-                                .addGroup(manageCoffeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(textField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addComponent(textField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addGap(28, 28, 28)
+                        .addGap(38, 38, 38)
                         .addGroup(manageCoffeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1)
-                            .addComponent(jButton2)
-                            .addComponent(jButton3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel2))
+                            .addComponent(jLabel3)
+                            .addComponent(txtHarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(manageCoffeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2)
+                        .addComponent(namaMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(16, 16, 16)
+                .addGroup(manageCoffeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(manageCoffeLayout.createSequentialGroup()
+                        .addGap(2, 2, 2)
+                        .addComponent(txtStok, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel8))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                .addGroup(manageCoffeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnProduk)
+                    .addComponent(btnDelete)
+                    .addComponent(btnUpdate))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -191,36 +283,24 @@ public class AdminDashboard extends javax.swing.JFrame {
         jLabel4.setForeground(new java.awt.Color(0, 102, 102));
         jLabel4.setText("Manage Order");
 
-        jButton4.setBackground(new java.awt.Color(0, 0, 0));
-        jButton4.setForeground(new java.awt.Color(255, 255, 255));
-        jButton4.setText("Pesan");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btnCetak.setBackground(new java.awt.Color(0, 0, 0));
+        btnCetak.setForeground(new java.awt.Color(255, 255, 255));
+        btnCetak.setText("Cetak Report");
+        btnCetak.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btnCetakActionPerformed(evt);
             }
         });
 
-        tblMenu1.setModel(new javax.swing.table.DefaultTableModel(
+        tblTransaksi.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
-                "Menu", "Harga", "Stok"
+                "Menu", "Harga", "Jumlah", "Total Harga"
             }
         ));
-        jScrollPane2.setViewportView(tblMenu1);
-
-        jButton6.setBackground(new java.awt.Color(0, 0, 0));
-        jButton6.setForeground(new java.awt.Color(255, 255, 255));
-        jButton6.setText("Cetak Report");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
+        jScrollPane3.setViewportView(tblTransaksi);
 
         javax.swing.GroupLayout lihatOrderLayout = new javax.swing.GroupLayout(lihatOrder);
         lihatOrder.setLayout(lihatOrderLayout);
@@ -229,16 +309,12 @@ public class AdminDashboard extends javax.swing.JFrame {
             .addGroup(lihatOrderLayout.createSequentialGroup()
                 .addGap(142, 142, 142)
                 .addComponent(jLabel4)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 202, Short.MAX_VALUE))
             .addGroup(lihatOrderLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(lihatOrderLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(lihatOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCetak, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         lihatOrderLayout.setVerticalGroup(
@@ -246,13 +322,11 @@ public class AdminDashboard extends javax.swing.JFrame {
             .addGroup(lihatOrderLayout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addComponent(jLabel4)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 452, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addGroup(lihatOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton4)
-                    .addComponent(jButton6))
-                .addGap(47, 47, 47))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnCetak)
+                .addGap(41, 41, 41))
         );
 
         mainPanel.add(lihatOrder, "order");
@@ -332,13 +406,129 @@ public class AdminDashboard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnProdukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdukActionPerformed
+        String menu = (String) namaMenu.getSelectedItem();
+        String harga = txtHarga.getText();
+        String stok = txtStok.getText();
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+        if (menu == null || harga.isEmpty() || stok.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Semua field harus diisi!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            Integer.parseInt(harga);
+            Integer.parseInt(stok);
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Harga dan stok harus berupa angka!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Connection conn = null;
+        PreparedStatement psCheck = null;
+        PreparedStatement psUpdate = null;
+        PreparedStatement psInsert = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            String sqlCheck = "SELECT idDetMenu, jumlah FROM detailMenu WHERE namaMenu = ?";
+            psCheck = conn.prepareStatement(sqlCheck);
+            psCheck.setString(1, menu);
+            ResultSet rs = psCheck.executeQuery();
+
+            if (rs.next()) {
+                int stokLama = rs.getInt("jumlah");
+                int stokBaru = stokLama + Integer.parseInt(stok);
+
+                String sqlUpdate = "UPDATE detailMenu SET harga = ?, jumlah = ? WHERE namaMenu = ?";
+                psUpdate = conn.prepareStatement(sqlUpdate);
+                psUpdate.setString(1, harga);
+                psUpdate.setInt(2, stokBaru);
+                psUpdate.setString(3, menu);
+                psUpdate.executeUpdate();
+
+                javax.swing.JOptionPane.showMessageDialog(this, "Produk berhasil diperbarui di database!", "Sukses", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                String sqlInsert = "INSERT INTO detailMenu (namaMenu, harga, jumlah) VALUES (?, ?, ?)";
+                psInsert = conn.prepareStatement(sqlInsert);
+                psInsert.setString(1, menu);
+                psInsert.setString(2, harga);
+                psInsert.setString(3, stok);
+                psInsert.executeUpdate();
+
+                javax.swing.JOptionPane.showMessageDialog(this, "Produk berhasil ditambahkan ke database!", "Sukses", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            }
+
+            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tblMenu.getModel();
+            boolean updated = false;
+            for (int i = 0; i < model.getRowCount(); i++) {
+                if (model.getValueAt(i, 0).equals(menu)) {
+                    model.setValueAt(harga, i, 1); 
+                    int stokLama = Integer.parseInt(model.getValueAt(i, 2).toString());
+                    int stokBaru = stokLama + Integer.parseInt(stok);
+                    model.setValueAt(stokBaru, i, 2);
+                    updated = true;
+                    break;
+                }
+            }
+            if (!updated) {
+                model.addRow(new Object[]{menu, harga, stok});
+            }
+
+            namaMenu.setSelectedItem("Expresso");
+            txtHarga.setText("");
+            txtStok.setText("");
+
+        } catch (SQLException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Gagal menyimpan data: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                if (psCheck != null) psCheck.close();
+                if (psUpdate != null) psUpdate.close();
+                if (psInsert != null) psInsert.close();
+                if (conn != null) DatabaseConnection.closeConnection();
+            } catch (SQLException ex) {
+                System.err.println("Error closing resources: " + ex.getMessage());
+            }
+        }
+    }//GEN-LAST:event_btnProdukActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        int selectedRow = tblMenu.getSelectedRow();
+        if (selectedRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Pilih produk yang ingin dihapus!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tblMenu.getModel();
+        String menu = (String) model.getValueAt(selectedRow, 0); 
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            String sql = "DELETE FROM detailMenu WHERE namaMenu = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, menu);
+
+            int rowsDeleted = ps.executeUpdate();
+            if (rowsDeleted > 0) {
+                model.removeRow(selectedRow);
+
+                javax.swing.JOptionPane.showMessageDialog(this, "Produk berhasil dihapus!", "Sukses", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Gagal menghapus data dari database!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Gagal menghapus data: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                if (ps != null) ps.close();
+                if (conn != null) DatabaseConnection.closeConnection();
+            } catch (SQLException ex) {
+                System.err.println("Error closing resources: " + ex.getMessage());
+            }
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderActionPerformed
         cardLayout.show(mainPanel, "order");
@@ -354,17 +544,71 @@ public class AdminDashboard extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnOutActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        int selectedRow = tblMenu.getSelectedRow();
+        if (selectedRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Pilih produk yang ingin diperbarui!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+        String menu = (String) namaMenu.getSelectedItem();
+        String harga = txtHarga.getText();
+        String stok = txtStok.getText();
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
+        if (menu == null || harga.isEmpty() || stok.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Semua field harus diisi!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            Integer.parseInt(harga);
+            Integer.parseInt(stok);
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Harga dan stok harus berupa angka!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            String sql = "UPDATE detailMenu SET harga = ?, jumlah = ? WHERE namaMenu = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, harga);
+            ps.setString(2, stok);
+            ps.setString(3, menu);
+
+            int rowsUpdated = ps.executeUpdate();
+            if (rowsUpdated > 0) {
+                javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tblMenu.getModel();
+                model.setValueAt(menu, selectedRow, 0);
+                model.setValueAt(harga, selectedRow, 1);
+                model.setValueAt(stok, selectedRow, 2);
+
+                javax.swing.JOptionPane.showMessageDialog(this, "Produk berhasil diperbarui!", "Sukses", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                namaMenu.setSelectedItem("Expresso");
+                txtHarga.setText("");
+                txtStok.setText("");
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Gagal memperbarui data di database!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Gagal memperbarui data: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                if (ps != null) ps.close();
+                if (conn != null) DatabaseConnection.closeConnection();
+            } catch (SQLException ex) {
+                System.err.println("Error closing resources: " + ex.getMessage());
+            }
+        }
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnCetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCetakActionPerformed
+        RiwayatPembelianUser cetak = new RiwayatPembelianUser();
+        cetak.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnCetakActionPerformed
 
     /**
      * @param args the command line arguments
@@ -395,10 +639,6 @@ public class AdminDashboard extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -410,29 +650,28 @@ public class AdminDashboard extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel adminPanel;
+    private javax.swing.JButton btnCetak;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnManage;
     private javax.swing.JButton btnOrder;
     private javax.swing.JButton btnOut;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton6;
+    private javax.swing.JButton btnProduk;
+    private javax.swing.JButton btnUpdate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JPanel lihatOrder;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JPanel manageCoffe;
+    private javax.swing.JComboBox<String> namaMenu;
     private javax.swing.JPanel sideMenu;
     private javax.swing.JTable tblMenu;
-    private javax.swing.JTable tblMenu1;
-    private java.awt.TextField textField4;
-    private java.awt.TextField textField5;
-    private java.awt.TextField textField6;
+    private javax.swing.JTable tblTransaksi;
+    private javax.swing.JTextField txtHarga;
+    private javax.swing.JTextField txtStok;
     // End of variables declaration//GEN-END:variables
 }

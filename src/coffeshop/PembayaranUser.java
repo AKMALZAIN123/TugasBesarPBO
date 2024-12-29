@@ -4,17 +4,41 @@
  */
 package coffeshop;
 
+import database.DatabaseConnection;
+import java.sql.*;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author akmal
  */
 public class PembayaranUser extends javax.swing.JFrame {
-
+    Connection connection = DatabaseConnection.getConnection();
     /**
      * Creates new form PembayaranUser
      */
+    
+    private void loadTotalHarga() {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String query = "SELECT totalHarga FROM menu";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            int total = 0;
+            while (rs.next()) {
+                total += rs.getInt("totalHarga");
+            }
+            txtHarga.setText(String.valueOf(total));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Gagal memuat total harga: " + e.getMessage());
+        }
+    }
+
+    
     public PembayaranUser() {
         initComponents();
+        txtHarga.setEnabled(false);
+        loadTotalHarga();
     }
 
     /**
@@ -29,9 +53,9 @@ public class PembayaranUser extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        textField1 = new java.awt.TextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnBayar = new javax.swing.JButton();
+        btnCancle = new javax.swing.JButton();
+        txtHarga = new javax.swing.JTextField();
 
         jTextField1.setText("jTextField1");
 
@@ -43,24 +67,25 @@ public class PembayaranUser extends javax.swing.JFrame {
 
         jLabel2.setText("Total Harga: ");
 
-        textField1.setText("\n");
-        textField1.addActionListener(new java.awt.event.ActionListener() {
+        btnBayar.setBackground(new java.awt.Color(0, 0, 0));
+        btnBayar.setForeground(new java.awt.Color(255, 255, 255));
+        btnBayar.setText("Bayar");
+        btnBayar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textField1ActionPerformed(evt);
+                btnBayarActionPerformed(evt);
             }
         });
 
-        jButton1.setBackground(new java.awt.Color(0, 0, 0));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Bayar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnCancle.setBackground(new java.awt.Color(255, 0, 0));
+        btnCancle.setText("Batal Pesanan");
+        btnCancle.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnCancleActionPerformed(evt);
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(255, 0, 0));
-        jButton2.setText("Batal Pesanan");
+        txtHarga.setBackground(new java.awt.Color(255, 255, 255));
+        txtHarga.setForeground(new java.awt.Color(51, 51, 51));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -75,13 +100,13 @@ public class PembayaranUser extends javax.swing.JFrame {
                         .addGap(73, 73, 73)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                                .addComponent(btnBayar, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnCancle, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(textField1, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtHarga)))))
                 .addGap(87, 87, 87))
         );
         layout.setVerticalGroup(
@@ -89,27 +114,74 @@ public class PembayaranUser extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(textField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(31, 31, 31)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(jLabel2)
+                    .addComponent(txtHarga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(32, 32, 32)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnBayar)
+                    .addComponent(btnCancle))
                 .addGap(52, 52, 52))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnBayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBayarActionPerformed
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            conn.setAutoCommit(false); 
 
-    private void textField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_textField1ActionPerformed
+            String selectQuery = "SELECT idMenu, namaMenu, harga, jumlah, totalHarga FROM menu";
+            try (PreparedStatement selectStmt = conn.prepareStatement(selectQuery);
+                 ResultSet rs = selectStmt.executeQuery()) {
+
+                String insertQuery = "INSERT INTO laporanTransaksi (idMenu, namaMenu, harga, jumlah, totalHarga) " +
+                                     "VALUES (?, ?, ?, ?, ?)";
+                try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
+                    while (rs.next()) {
+                        int idMenu = rs.getInt("idMenu");
+                        String namaMenu = rs.getString("namaMenu");
+                        int harga = rs.getInt("harga");
+                        int jumlah = rs.getInt("jumlah");
+                        int totalHarga = rs.getInt("totalHarga");
+
+                        insertStmt.setInt(1, idMenu);
+                        insertStmt.setString(2, namaMenu);
+                        insertStmt.setInt(3, harga);
+                        insertStmt.setInt(4, jumlah);
+                        insertStmt.setInt(5, totalHarga);
+                        insertStmt.executeUpdate();
+                    }
+                }
+            }
+
+            try (PreparedStatement stmt1 = conn.prepareStatement("SET FOREIGN_KEY_CHECKS = 0");
+                PreparedStatement stmt2 = conn.prepareStatement("TRUNCATE menu");
+                PreparedStatement stmt3 = conn.prepareStatement("ALTER TABLE menu AUTO_INCREMENT = 1");
+                PreparedStatement stmt4 = conn.prepareStatement("SET FOREIGN_KEY_CHECKS = 1")) {
+                stmt1.executeUpdate();
+                stmt2.executeUpdate();
+                stmt3.executeUpdate();
+                stmt4.executeUpdate();
+            }
+
+            conn.commit();
+            txtHarga.setText("0");
+            JOptionPane.showMessageDialog(this, "Pembayaran berhasil!");
+            MenuCoffeShopUser back = new MenuCoffeShopUser();
+            back.setVisible(true);
+            this.dispose();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnBayarActionPerformed
+
+    private void btnCancleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancleActionPerformed
+        MenuCoffeShopUser back = new MenuCoffeShopUser();
+        back.setVisible(true);
+    }//GEN-LAST:event_btnCancleActionPerformed
 
     /**
      * @param args the command line arguments
@@ -137,7 +209,6 @@ public class PembayaranUser extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(PembayaranUser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -148,11 +219,11 @@ public class PembayaranUser extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnBayar;
+    private javax.swing.JButton btnCancle;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JTextField jTextField1;
-    private java.awt.TextField textField1;
+    private javax.swing.JTextField txtHarga;
     // End of variables declaration//GEN-END:variables
 }
